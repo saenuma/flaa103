@@ -220,8 +220,23 @@ sudo snap restart flaarum.store
 		var startupScriptControlInstance = fmt.Sprintf(`
 #! /bin/bash
 
+sudo apt update
 
-cat > /tmp/f103.txt <<EOF
+# download the files
+wget https://sae.ng/static/flaa103/f1resizer
+wget https://sae.ng/static/flaa103/f1resizer.service
+sudo chmod +x /opt/flaa103/f1resizer
+sudo cp f1resizer.service /etc/systemd/system/f1resizer.service
+
+# put the files in place
+sudo mkdir -p /opt/flaa103/
+sudo cp f1resizer /opt/flaa103/f1resizer
+
+# start the programs
+sudo systemctl daemon-reload
+sudo systemctl start f1resizer
+
+cat > /opt/flaa103/input.txt <<EOF
 %s
 %s
 %s
@@ -230,6 +245,9 @@ cat > /tmp/f103.txt <<EOF
 %s
 
 EOF 
+
+echo "debug" > /opt/flaa103/debug.txt
+
 `, conf.Get("project"), conf.Get("zone"), instanceName, conf.Get("timezone"),
 			conf.Get("machine-type-day"), conf.Get("machine-type-night"),
 		)
