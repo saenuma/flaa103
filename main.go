@@ -162,7 +162,7 @@ sudo snap restart flaarum.store
 		instance := &compute.Instance{
 			Name:        instanceName,
 			Description: "flaarum data instance",
-			MachineType: prefix + "/zones/" + conf.Get("zone") + "/machineTypes/" + conf.Get("machine-type-night"),
+			MachineType: prefix + "/zones/" + conf.Get("zone") + "/machineTypes/" + conf.Get("machine-type-day"),
 			Disks: []*compute.AttachedDisk{
 				{
 					AutoDelete: true,
