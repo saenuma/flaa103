@@ -15,11 +15,7 @@ import (
 	"google.golang.org/api/option"
 )
 
-const RootConfigTemplate = `// debug can be set to either false or true
-// when it is set to true it would print more detailed error messages
-debug: false
-
-// project is the Google Cloud project you want to launch the server into.
+const RootConfigTemplate = `// project is the Google Cloud project you want to launch the server into.
 // you can create it from your Google Cloud Console.
 project:
 
@@ -230,8 +226,6 @@ sudo cp resizer.service /etc/systemd/system/resizer.service
 sudo mkdir -p /opt/flaa103/
 sudo cp resizer /opt/flaa103/resizer
 sudo chmod +x /opt/flaa103/resizer
-
-echo "debug" > /opt/flaa103/debug.txt
 
 cat > /opt/flaa103/input.txt << EOF
 %s

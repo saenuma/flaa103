@@ -118,13 +118,6 @@ func resizeToNightMachineType() {
 var confObject map[string]string
 
 func main() {
-	debugPath := "/opt/flaa103/debug.txt"
-	_, err := os.ReadFile(debugPath)
-	debug := false
-	if err == nil {
-		debug = true
-	}
-
 	inputPath := "/opt/flaa103/input.txt"
 	rawInputs, err := os.ReadFile(inputPath)
 	if err != nil {
@@ -145,20 +138,12 @@ func main() {
 	confObject["machine-type-day"] = rawSlice[4]
 	confObject["machine-type-night"] = rawSlice[5]
 
-	if debug {
-		fmt.Println(confObject)
-	}
-
 	loc, _ := time.LoadLocation(confObject["timezone"])
 
 	scheduler := gocron.NewScheduler(loc)
-	if debug {
-		scheduler.Every(10).Minutes().Do(resizeToDayMachineType)
-		scheduler.Every(20).Minutes().Do(resizeToNightMachineType)
-	} else {
-		scheduler.Every(1).Day().At("07:00").Do(resizeToDayMachineType)
-		scheduler.Every(1).Day().At("22:00").Do(resizeToNightMachineType)
-	}
+
+	scheduler.Every(1).Day().At("07:00").Do(resizeToDayMachineType)
+	scheduler.Every(1).Day().At("22:00").Do(resizeToNightMachineType)
 
 	scheduler.StartBlocking()
 }
