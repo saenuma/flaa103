@@ -144,6 +144,10 @@ func main() {
 
 	confObject = make(map[string]string)
 	rawSlice := strings.Split(strings.TrimSpace(string(rawInputs)), "\n")
+	if len(rawSlice) != 6 {
+		panic("invalid inputs.txt")
+	}
+
 	confObject["project"] = rawSlice[0]
 	confObject["zone"] = rawSlice[1]
 	confObject["instance-name"] = rawSlice[2]

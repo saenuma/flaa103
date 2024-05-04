@@ -223,18 +223,18 @@ sudo snap restart flaarum.store
 sudo apt update
 
 # download the files
-wget https://sae.ng/static/flaa103/f1resizer
-wget https://sae.ng/static/flaa103/f1resizer.service
-sudo chmod +x /opt/flaa103/f1resizer
-sudo cp f1resizer.service /etc/systemd/system/f1resizer.service
+wget https://sae.ng/static/flaa103/resizer
+wget https://sae.ng/static/flaa103/resizer.service
+sudo chmod +x /opt/flaa103/resizer
+sudo cp resizer.service /etc/systemd/system/resizer.service
 
 # put the files in place
 sudo mkdir -p /opt/flaa103/
-sudo cp f1resizer /opt/flaa103/f1resizer
+sudo cp resizer /opt/flaa103/resizer
 
 # start the programs
 sudo systemctl daemon-reload
-sudo systemctl start f1resizer
+sudo systemctl start resizer
 
 cat > /opt/flaa103/input.txt <<EOF
 %s
