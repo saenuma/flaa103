@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/go-co-op/gocron"
-	"golang.org/x/oauth2/google"
 	compute "google.golang.org/api/compute/v1"
+	"google.golang.org/api/option"
 )
 
 func waitForOperation(project, zone string, service *compute.Service, op *compute.Operation) error {
@@ -37,12 +37,7 @@ func waitForOperation(project, zone string, service *compute.Service, op *comput
 
 func resizeToDayMachineType() {
 	ctx := context.Background()
-	client, err := google.DefaultClient(ctx, compute.ComputeScope)
-	if err != nil {
-		panic(err)
-	}
-
-	computeService, err := compute.New(client)
+	computeService, err := compute.NewService(ctx, option.WithScopes(compute.ComputeScope))
 	if err != nil {
 		panic(err)
 	}
@@ -82,12 +77,7 @@ func resizeToDayMachineType() {
 
 func resizeToNightMachineType() {
 	ctx := context.Background()
-	client, err := google.DefaultClient(ctx, compute.ComputeScope)
-	if err != nil {
-		panic(err)
-	}
-
-	computeService, err := compute.New(client)
+	computeService, err := compute.NewService(ctx, option.WithScopes(compute.ComputeScope))
 	if err != nil {
 		panic(err)
 	}
@@ -128,18 +118,18 @@ func resizeToNightMachineType() {
 var confObject map[string]string
 
 func main() {
+	debugPath := "/opt/flaa103/debug.txt"
+	_, err := os.ReadFile(debugPath)
+	debug := false
+	if err == nil {
+		debug = true
+	}
+
 	inputPath := "/opt/flaa103/input.txt"
 	rawInputs, err := os.ReadFile(inputPath)
 	if err != nil {
 		fmt.Println(err.Error())
 		os.Exit(1)
-	}
-
-	debugPath := "/opt/flaa103/debug.txt"
-	_, err = os.ReadFile(debugPath)
-	debug := false
-	if err == nil {
-		debug = true
 	}
 
 	confObject = make(map[string]string)
@@ -150,10 +140,14 @@ func main() {
 
 	confObject["project"] = rawSlice[0]
 	confObject["zone"] = rawSlice[1]
-	confObject["instance-name"] = rawSlice[2]
+	confObject["instance"] = rawSlice[2]
 	confObject["timezone"] = rawSlice[3]
 	confObject["machine-type-day"] = rawSlice[4]
 	confObject["machine-type-night"] = rawSlice[5]
+
+	if debug {
+		fmt.Println(confObject)
+	}
 
 	loc, _ := time.LoadLocation(confObject["timezone"])
 

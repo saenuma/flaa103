@@ -6,9 +6,7 @@ require (
 	github.com/go-co-op/gocron v1.37.0
 	github.com/gookit/color v1.5.2
 	github.com/pkg/errors v0.9.1
-	github.com/saenuma/flaarum v1.10.0
 	github.com/saenuma/zazabul v1.1.4
-	golang.org/x/oauth2 v0.20.0
 	google.golang.org/api v0.177.0
 )
 
@@ -16,7 +14,6 @@ require (
 	cloud.google.com/go/auth v0.3.0 // indirect
 	cloud.google.com/go/auth/oauth2adapt v0.2.2 // indirect
 	cloud.google.com/go/compute/metadata v0.3.0 // indirect
-	github.com/adam-hanna/arrayOperations v1.0.1 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/go-logr/logr v1.4.1 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
@@ -36,6 +33,7 @@ require (
 	go.uber.org/atomic v1.9.0 // indirect
 	golang.org/x/crypto v0.22.0 // indirect
 	golang.org/x/net v0.24.0 // indirect
+	golang.org/x/oauth2 v0.20.0 // indirect
 	golang.org/x/sys v0.19.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240429193739-8cf5692501f6 // indirect

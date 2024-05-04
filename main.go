@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/gookit/color"
-	"github.com/saenuma/flaarum/flaarum_shared"
 	"github.com/saenuma/zazabul"
 	compute "google.golang.org/api/compute/v1"
 	"google.golang.org/api/option"
@@ -43,7 +42,7 @@ machine-type-day: e2-highcpu-8
 machine-type-night: e2-highcpu-2
 
 // timezone values can be gotten online.
-"timezone":           "Africa/Lagos",
+timezone: Africa/Lagos
 
 `
 
@@ -79,7 +78,7 @@ Supported Commands:
 		confFilename := "las" + time.Now().Format("20060102T150405") + ".zconf"
 		confPath := filepath.Join(rootPath, confFilename)
 
-		conf, err := zazabul.ParseConfig(flaarum_shared.RootConfigTemplate)
+		conf, err := zazabul.ParseConfig(RootConfigTemplate)
 		if err != nil {
 			panic(err)
 		}
@@ -212,7 +211,7 @@ sudo snap restart flaarum.store
 			},
 		}
 
-		_, err = computeService.Instances.Insert(conf.Get("project"), conf.Get("zone"), instance).Do()
+		op1, err := computeService.Instances.Insert(conf.Get("project"), conf.Get("zone"), instance).Do()
 		if err != nil {
 			panic(err)
 		}
@@ -225,28 +224,28 @@ sudo apt update
 # download the files
 wget https://sae.ng/static/flaa103/resizer
 wget https://sae.ng/static/flaa103/resizer.service
-sudo chmod +x /opt/flaa103/resizer
 sudo cp resizer.service /etc/systemd/system/resizer.service
 
 # put the files in place
 sudo mkdir -p /opt/flaa103/
 sudo cp resizer /opt/flaa103/resizer
+sudo chmod +x /opt/flaa103/resizer
+
+echo "debug" > /opt/flaa103/debug.txt
+
+cat > /opt/flaa103/input.txt << EOF
+%s
+%s
+%s
+%s
+%s
+%s
+
+EOF
 
 # start the programs
 sudo systemctl daemon-reload
 sudo systemctl start resizer
-
-cat > /opt/flaa103/input.txt <<EOF
-%s
-%s
-%s
-%s
-%s
-%s
-
-EOF 
-
-echo "debug" > /opt/flaa103/debug.txt
 
 `, conf.Get("project"), conf.Get("zone"), instanceName, conf.Get("timezone"),
 			conf.Get("machine-type-day"), conf.Get("machine-type-night"),
@@ -298,7 +297,16 @@ echo "debug" > /opt/flaa103/debug.txt
 			},
 		}
 
-		_, err = computeService.Instances.Insert(conf.Get("project"), conf.Get("zone"), ctlInstance).Do()
+		op2, err := computeService.Instances.Insert(conf.Get("project"), conf.Get("zone"), ctlInstance).Do()
+		if err != nil {
+			panic(err)
+		}
+
+		err = waitForOperation(conf.Get("project"), conf.Get("zone"), computeService, op1)
+		if err != nil {
+			panic(err)
+		}
+		err = waitForOperation(conf.Get("project"), conf.Get("zone"), computeService, op2)
 		if err != nil {
 			panic(err)
 		}
@@ -307,4 +315,27 @@ echo "debug" > /opt/flaa103/debug.txt
 		fmt.Println("Control Instance Name: ", f103InstanceName)
 	}
 
+}
+
+func waitForOperation(project, zone string, service *compute.Service, op *compute.Operation) error {
+	ctx := context.Background()
+	for {
+		result, err := service.ZoneOperations.Get(project, zone, op.Name).Context(ctx).Do()
+		if err != nil {
+			return fmt.Errorf("failed retriving operation status: %s", err)
+		}
+
+		if result.Status == "DONE" {
+			if result.Error != nil {
+				var errors []string
+				for _, e := range result.Error.Errors {
+					errors = append(errors, e.Message)
+				}
+				return fmt.Errorf("operation failed with error(s): %s", strings.Join(errors, ", "))
+			}
+			break
+		}
+		time.Sleep(time.Second)
+	}
+	return nil
 }
