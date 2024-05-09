@@ -38,7 +38,7 @@ apps:
       - network
 
   gcasr:
-    command: bin/gcpasr
+    command: bin/gcasr
     daemon: simple
     restart-condition: on-abnormal
     plugs:
