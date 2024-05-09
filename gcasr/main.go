@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/go-co-op/gocron"
+	"github.com/saenuma/zazabul"
 	compute "google.golang.org/api/compute/v1"
 	"google.golang.org/api/option"
 )
@@ -118,27 +119,23 @@ func resizeToNightMachineType() {
 var confObject map[string]string
 
 func main() {
-	inputPath := "/opt/flaa103/input.txt"
-	rawInputs, err := os.ReadFile(inputPath)
+	inputPath := "/var/snap/flaarum/common/input.zconf"
+	conf, err := zazabul.LoadConfigFile(inputPath)
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Printf("%+v\n", err)
 		os.Exit(1)
 	}
 
 	confObject = make(map[string]string)
-	rawSlice := strings.Split(strings.TrimSpace(string(rawInputs)), "\n")
-	if len(rawSlice) != 6 {
-		panic("invalid inputs.txt")
-	}
 
-	confObject["project"] = rawSlice[0]
-	confObject["zone"] = rawSlice[1]
-	confObject["instance"] = rawSlice[2]
-	confObject["timezone"] = rawSlice[3]
-	confObject["machine-type-day"] = rawSlice[4]
-	confObject["machine-type-night"] = rawSlice[5]
+	confObject["project"] = conf.Get("project")
+	confObject["zone"] = conf.Get("zone")
+	confObject["instance"] = conf.Get("instance")
+	confObject["timezone"] = conf.Get("timezone")
+	confObject["machine-type-day"] = conf.Get("machine-type-day")
+	confObject["machine-type-night"] = conf.Get("machine-type-night")
 
-	loc, _ := time.LoadLocation(confObject["timezone"])
+	loc, _ := time.LoadLocation(conf.Get("timezone"))
 
 	scheduler := gocron.NewScheduler(loc)
 

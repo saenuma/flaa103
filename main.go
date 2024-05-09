@@ -40,6 +40,8 @@ machine-type-night: e2-highcpu-2
 // timezone values can be gotten online.
 timezone: Africa/Lagos
 
+// debug makes the program prints more info
+debug: false
 `
 
 func main() {
@@ -212,38 +214,23 @@ sudo snap restart flaarum.store
 			panic(err)
 		}
 
+		rawConf, _ := os.ReadFile(inputPath)
+
 		var startupScriptControlInstance = fmt.Sprintf(`
 #! /bin/bash
 
 sudo apt update
+sudo apt install nano
+sudo snap install flaa103
 
-# download the files
-wget https://sae.ng/static/flaa103/resizer
-wget https://sae.ng/static/flaa103/resizer.service
-sudo cp resizer.service /etc/systemd/system/resizer.service
 
-# put the files in place
-sudo mkdir -p /opt/flaa103/
-sudo cp resizer /opt/flaa103/resizer
-sudo chmod +x /opt/flaa103/resizer
-
-cat > /opt/flaa103/input.txt << EOF
+cat > /var/snap/flaarum/common/input.zconf << EOF
 %s
-%s
-%s
-%s
-%s
-%s
-
 EOF
 
-# start the programs
-sudo systemctl daemon-reload
-sudo systemctl start resizer
+sudo snap restart flaa103.gcasr
 
-`, conf.Get("project"), conf.Get("zone"), instanceName, conf.Get("timezone"),
-			conf.Get("machine-type-day"), conf.Get("machine-type-night"),
-		)
+`, string(rawConf))
 
 		ctlInstance := &compute.Instance{
 			Name:        f103InstanceName,
