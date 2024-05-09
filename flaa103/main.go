@@ -224,7 +224,7 @@ sudo apt install nano
 sudo snap install flaa103
 
 
-cat > /var/snap/flaarum/common/input.zconf << EOF
+cat > /var/snap/flaa103/common/input.zconf << EOF
 %s
 EOF
 
