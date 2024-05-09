@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	inputPath := "/var/snap/flaarum/common/input.zconf"
+	inputPath := "/var/snap/flaa103/common/input.zconf"
 	conf, err := zazabul.LoadConfigFile(inputPath)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
