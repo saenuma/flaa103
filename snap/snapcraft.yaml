@@ -43,6 +43,7 @@ apps:
     restart-condition: on-abnormal
     plugs:
       - network
+      - network-bind
 
   gcasrn:
     command: bin/gcasrn
