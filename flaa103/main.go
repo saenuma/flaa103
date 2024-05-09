@@ -61,15 +61,21 @@ func main() {
 
 Supported Commands:
 
-    init     Creates a config file for auto scaling deployment. The method of autoscaling is to launch a large server in the
-             morning and resize in the evening to a small server. Good for websites facing one country. Edit it to your own 
-             requirements. Some of the values can be gotten from Google Cloud's documentation. 
+    pwd     Prints working directory
 
-    las      Launches an autoscaling deployment from the config created above. The deployment would have two servers.
-             It expects a launch file (created from 'init' above) and a service account credentials file 
-             (gotten from Google Cloud).
+    init    Creates a config file for auto scaling deployment. The method of autoscaling is to launch a large server in the
+            morning and resize in the evening to a small server. Good for websites facing one country. Edit it to your own 
+            requirements. Some of the values can be gotten from Google Cloud's documentation. 
+
+    las     Launches an autoscaling deployment from the config created above. The deployment would have two servers.
+            It expects a launch file (created from 'init' above) and a service account credentials file 
+            (gotten from Google Cloud). This two files must be placed in the file gotten from the 'pwd' command
+            and must be just the file names.
 
       `)
+
+	case "pwd":
+		fmt.Println(rootPath)
 
 	case "init":
 
