@@ -37,10 +37,14 @@ apps:
     plugs:
       - network
 
-  gcpasr:
+  gcasr:
     command: bin/gcpasr
     daemon: simple
     restart-condition: on-abnormal
     plugs:
       - network
 
+  gcasrn:
+    command: bin/gcasrn
+    plugs:
+      - network
