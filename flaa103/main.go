@@ -41,6 +41,7 @@ machine-type-night: e2-highcpu-2
 timezone: Africa/Lagos
 
 // debug makes the program prints more info
+// it also enables a quick test of the partial autoscaling of flaa103
 debug: false
 `
 

@@ -31,6 +31,23 @@ func main() {
 
 	scheduler := gocron.NewScheduler(loc)
 
+	if conf.Get("debug") == "true" {
+		fmt.Println("debug is set to true. adding quick partial autoscaling tests.")
+		currentTime := time.Now()
+		t1 := currentTime.Add(time.Minute * time.Duration(20))
+		t2 := t1.Add(time.Minute * time.Duration(40))
+		t3 := t1.Add(time.Minute * time.Duration(60))
+		t4 := t1.Add(time.Minute * time.Duration(80))
+
+		// first test
+		scheduler.Every(1).Day().At(t1.Format("15:04")).Do(flaa103.ResizeToDayMachineType)
+		scheduler.Every(1).Day().At(t2.Format("15:04")).Do(flaa103.ResizeToNightMachineType)
+		// second test
+		scheduler.Every(1).Day().At(t3.Format("15:04")).Do(flaa103.ResizeToDayMachineType)
+		scheduler.Every(1).Day().At(t4.Format("15:04")).Do(flaa103.ResizeToNightMachineType)
+
+	}
+
 	scheduler.Every(1).Day().At("07:00").Do(flaa103.ResizeToDayMachineType)
 	scheduler.Every(1).Day().At("22:00").Do(flaa103.ResizeToNightMachineType)
 
